@@ -3,7 +3,6 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
-import model
 from model import modelLSTM
 import matplotlib.pyplot as plt
 from DataPreprocessing import textPreprocessing
@@ -47,7 +46,7 @@ paddedset = pad_sequences(sekuens, maxlen=maxlen)
 vocab_size = len(tokenizer.word_index)+1
 
 # split data into data train, validation (80 : 20)
-X_train, y_train, X_val, y_val = train_test_split(paddedset, label_news, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(paddedset, label_news, test_size=0.2, random_state=42)
 n, num_class = y_train.shape
 
 def plot_history(history, name_plot):
@@ -96,7 +95,7 @@ if __name__=="__main__":
 
     callbacks = [model_checkpoint_callback, reduce_lr, [early_stop]]
 
-    model = modelLSTM(vocab_size, num_class)
+    model = modelLSTM(vocab_size, num_class).lstmModel()
     num_epochs = 30
     history = model.fit(X_train, y_train, epochs=num_epochs, batch_size=10, 
                         validation_data=(X_val, y_val), verbose=1, callbacks = callbacks)
@@ -106,4 +105,4 @@ if __name__=="__main__":
     print("Training Accuracy: {:.4f}".format(accuracy))
     loss, accuracy = mymodel.evaluate(X_val, y_val, verbose=False)
     print("Testing Accuracy:  {:.4f}".format(accuracy))
-    plot_history(history)
+    plot_history(history, "history accuracy")

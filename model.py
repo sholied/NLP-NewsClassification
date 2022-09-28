@@ -21,4 +21,5 @@ class modelLSTM():
             optimizer='adam',
             metrics=['accuracy'])
         print(model.summary())
+        
         return model
